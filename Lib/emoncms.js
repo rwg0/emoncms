@@ -62,8 +62,40 @@ var path = (function() {
     return _path;
 })();
 
+var getUrlParameter = function getUrlParameter(sParam) {
+    var sPageURL = window.location.search.substring(1),
+        sURLVariables = sPageURL.split('&'),
+        sParameterName,
+        i;
+
+    for (i = 0; i < sURLVariables.length; i++) {
+        sParameterName = sURLVariables[i].split('=');
+
+        if (sParameterName[0] === sParam) {
+            return sParameterName[1] === undefined ? true : decodeURIComponent(sParameterName[1]);
+        }
+    }
+    return false;
+};
+
 // on JQuery Ready...
 $(function(){
+    if(getUrlParameter('kioskmode')==='1') {
+        $(".menu-top").hide();
+        $(".menu-l3").hide();
+        $(".menu-l2").hide();
+        $(".content-container").css("margin","0px");
+    }
+    if(getUrlParameter('fullscreen')==='1') {
+	var docEl = document.documentElement;
+  	var requestFullScreen =
+    		docEl.requestFullscreen ||
+    		docEl.mozRequestFullScreen ||
+    		docEl.webkitRequestFullScreen ||
+    		docEl.msRequestFullscreen;
+	requestFullScreen.call(docEl);
+    }
+
     // trigger jquery "window.resized" custom event after debounce delay
     var resizeTimeout = false;
     window.addEventListener('resize', function(event) {
